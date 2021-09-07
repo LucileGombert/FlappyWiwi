@@ -21,3 +21,18 @@ h1 {
   padding: 8px 6px;
   background: #a6c529;
 }
+
+@media (max-width: 600px) { 
+  header {
+    width: 371px;
+  }
+  h1 {
+    font-size: 26px;
+  }
+  .score-container {
+    font-size: 12px;
+  }
+  canvas {
+    width: 371px;
+  }
+}

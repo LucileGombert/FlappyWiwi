@@ -19,13 +19,22 @@ gameoverBgImg.src ="./bg.jpg";
 //General settings
 let gamePlaying = false;
 let gameOver = false;
+
 const gravity = .5;
+const gravityLess = .15;
+
 const speed = 6.2;
+const speedLess = 2.2;
+
 const originSize = [231, 207];
-const originSizeGameover = [500, 500]
+const originSizeGameover = [500, 500];
+
 const size = [100, 80];
-const sizeGameover = [200, 200]
+const sizeGameover = [200, 200];
+
 const jump = -11.5;
+const jumpLess = -5.5;
+
 const cTenth = (canvas.width / 10);
 
 //Pipe Settings
@@ -42,7 +51,13 @@ let flyHeight;
 
 const setup = () => {
     currentScore = 0;
-    flight = jump;
+
+    if (window.matchMedia("(max-width: 600px)").matches) {
+        flight = jumpLess;
+    } else {
+        flight = jump;
+    }
+
     flyHeight = (canvas.height / 2) - (size[1] / 2);
 
     pipes = Array(3).fill().map((a, i) => [canvas.width + (i * (pipeGap + pipeWidth)), pipeLoc()]);
@@ -52,18 +67,31 @@ const render = () => {
     index++;
 
     //Fisrt part background
-    ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height, -((index * (speed /2)) % canvas.width) + canvas.width, 0, canvas.width, canvas.height);
+    if (window.matchMedia("(max-width: 600px)").matches) {
+        ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height, -((index * (speedLess /2)) % canvas.width) + canvas.width, 0, canvas.width, canvas.height);
+    } else {
+        ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height, -((index * (speed /2)) % canvas.width) + canvas.width, 0, canvas.width, canvas.height);
+    }
 
     //Second part background
-    ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height, -((index * (speed /2)) % canvas.width), 0, canvas.width, canvas.height);
+    if (window.matchMedia("(max-width: 600px)").matches) {
+        ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height, -((index * (speedLess /2)) % canvas.width), 0, canvas.width, canvas.height);
+     } else {
+       ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height, -((index * (speed /2)) % canvas.width), 0, canvas.width, canvas.height);
+     }
 
     
     if(gamePlaying) {
         //Display jump monkey
         ctx.drawImage(monkeyImg, 0, 0, ...originSize, cTenth, flyHeight, ...size);
         
-        flight += gravity;
-        flyHeight = Math.min(flyHeight + flight, canvas.height - size[1]);
+        if (window.matchMedia("(max-width: 600px)").matches) {
+            flight += gravityLess;
+            flyHeight = Math.min(flyHeight + flight, canvas.height - size[1]);
+        } else {
+            flight += gravity;
+            flyHeight = Math.min(flyHeight + flight, canvas.height - size[1]);
+        }
 
     }  else if (gameOver) {
         //Display gameover page
@@ -85,7 +113,11 @@ const render = () => {
     //Display pipes
     if(gamePlaying) {
         pipes.map(pipe => {
-            pipe[0] -= speed;
+            if (window.matchMedia("(max-width: 600px)").matches) {
+                pipe[0] -= speedLess;
+            } else {
+                pipe[0] -= speed;
+            }
 
             //Top pipes
             ctx.drawImage(img, 432, 588 - pipe[1], pipeWidth, pipe[1], pipe[0], 0, pipeWidth, pipe[1]);
@@ -129,4 +161,9 @@ img.onload = render;
 
 // start game
 document.addEventListener('click', () => gamePlaying = true);
-window.onclick = () => flight = jump;
+
+if (window.matchMedia("(max-width: 600px)").matches) {
+    window.onclick = () => flight = jumpLess;
+  } else {
+    window.onclick = () => flight = jump;
+  }
